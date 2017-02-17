@@ -2,6 +2,7 @@ package nus.cs4222.shootingapp;
 
 import java.util.ArrayList;
 
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.Activity;
@@ -283,8 +284,16 @@ public class ShootingAppActivity
 
     /** Detect the shooting direction and region. */
     private void detectShootingDirectionAndRegion( SensorEvent event ) {
-        float yaw = event.values[2];
+        float R[] = new float[9];
+        SensorManager.getRotationMatrixFromVector(R, event.values);
 
+        if (R.length == 0){
+            return;
+        }
+        float rotations[] = new float[3];
+        SensorManager.getOrientation(R, rotations);
+        float yaw = (float)Math.toDegrees(rotations[0]);
+        System.out.println("absolute " + yaw);
         //fixed inital direction of reference
         if ( hasFixedRefDirection == false ) {
             shootingInitialReference = yaw;
@@ -294,17 +303,10 @@ public class ShootingAppActivity
         // PA3: Detect the shooting direction and region.
         //  Think about what sensor or sensors on the phone can 
         //  help you do this.
-        if ( shootingInitialReference >= 0 ) {
-            yaw = yaw - shootingInitialReference;
+        if ( shootingInitialReference < 0 ) {
+            yaw = yaw + Math.abs(shootingInitialReference);
         }else{
-            yaw = yaw + shootingInitialReference;
-        }
-
-        if ( yaw < -1 ) {
-            yaw = yaw + 2;
-        }
-        if ( yaw >= 1 ) {
-            yaw = yaw - 2;
+            yaw = yaw - Math.abs(shootingInitialReference);
         }
 
         // PA3: After you have detected the shooting region, assign the
@@ -317,7 +319,8 @@ public class ShootingAppActivity
         //  by default).
         // Also, display the shooting direction and the shooting region 
         //  in the text view below
-        double division = (-1) * yaw / 0.25;
+
+        double division =  yaw / 45;
         if ( division < 0 ) {
             shootingRegion = (int)Math.floor(division);
         } else if ( division > 0 ) {
@@ -341,7 +344,7 @@ public class ShootingAppActivity
 
         /* compute shooting direction in angles */
         /* negate such that direction is represented in clockwise 0 - 360 */
-        shootingDirection = (float) (((-1) * (float)yaw / 0.5) *  90);
+        shootingDirection = yaw;
         if (shootingDirection < 0){
             shootingDirection = 360 + shootingDirection;
         }
