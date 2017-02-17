@@ -143,11 +143,16 @@ public class ShootingAppActivity
         // Get references to the linear accl and gravity sensors
         acclSensor = sensorManager.getDefaultSensor( Sensor.TYPE_LINEAR_ACCELERATION );
         gravitySensor = sensorManager.getDefaultSensor( Sensor.TYPE_GRAVITY );
+        rotationSensor = sensorManager.getDefaultSensor( Sensor.TYPE_ROTATION_VECTOR );
+
         if( acclSensor == null ) {
             throw new Exception( "Oops, there is no linear accelerometer sensor on this device :(" );
         }
         else if( gravitySensor == null ) {
             throw new Exception( "Oops, there is no gravity sensor on this device :(" );
+        }
+        else if ( rotationSensor == null ) {
+            throw new Exception( "Oops, there is no rotation sensor on this device :(" );
         }
     }
 
@@ -160,6 +165,8 @@ public class ShootingAppActivity
         shootingRegion = 1;
         shootingDirection = 0.0F;
         isAcclInPeakZone = false;
+        hasFixedRefDirection = false;
+        shootingInitialReference = 0;
 
         // Start sampling the sensors
         sensorManager.registerListener( this ,                              // Listener
@@ -168,6 +175,9 @@ public class ShootingAppActivity
         sensorManager.registerListener( this ,                              // Listener
                                         gravitySensor ,                     // Sensor to measure 
                                         SensorManager.SENSOR_DELAY_GAME );  // Measurement interval (microsec)
+        sensorManager.registerListener( this ,                              // Listener
+                                        rotationSensor ,                    // Sensor to measure
+                                        SensorManager.SENSOR_DELAY_GAME );  // MEasurement interval (microsec)
     }
 
     /** Stops all sensing. */
@@ -186,18 +196,20 @@ public class ShootingAppActivity
         //  process them in another thread.
 
         // Case 1: Gravity sensor
-        if( event.sensor.getType() == Sensor.TYPE_GRAVITY ) {
-            processGravityValues( event );
+        if (event.sensor.getType() == Sensor.TYPE_GRAVITY) {
+            processGravityValues(event);
         }
         // Case 2: Linear accl sensor
-        else if( event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION ) {
-            processAcclValues( event );
+        else if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+            processAcclValues(event);
         }
 
         // PA3: Detect the shooting direction and region.
         //  Think about what sensor or sensors on the phone can 
         //  help you do this.
-        detectShootingDirectionAndRegion( event );
+        else if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+            detectShootingDirectionAndRegion( event );
+        }
     }
 
     /** Process the gravity sensor. */
@@ -271,10 +283,29 @@ public class ShootingAppActivity
 
     /** Detect the shooting direction and region. */
     private void detectShootingDirectionAndRegion( SensorEvent event ) {
+        float yaw = event.values[2];
+
+        //fixed inital direction of reference
+        if ( hasFixedRefDirection == false ) {
+            shootingInitialReference = yaw;
+            hasFixedRefDirection = true;
+        }
 
         // PA3: Detect the shooting direction and region.
         //  Think about what sensor or sensors on the phone can 
         //  help you do this.
+        if ( shootingInitialReference >= 0 ) {
+            yaw = yaw - shootingInitialReference;
+        }else{
+            yaw = yaw + shootingInitialReference;
+        }
+
+        if ( yaw < -1 ) {
+            yaw = yaw + 2;
+        }
+        if ( yaw >= 1 ) {
+            yaw = yaw - 2;
+        }
 
         // PA3: After you have detected the shooting region, assign the
         //  region number (in the range 1 to 8) to the member variable 
@@ -285,14 +316,47 @@ public class ShootingAppActivity
         //  based on the value of 'shootingRegion' (which is set to 1
         //  by default).
         // Also, display the shooting direction and the shooting region 
-        //  in the text view below.
+        //  in the text view below
+        double division = (-1) * yaw / 0.25;
+        if ( division < 0 ) {
+            shootingRegion = (int)Math.floor(division);
+        } else if ( division > 0 ) {
+            shootingRegion = (int)Math.ceil(division);
+        }else{
+            shootingRegion = 1;
+        }
+        switch(shootingRegion){
+            case -4:
+                shootingRegion = 5;
+                break;
+            case -3:
+                shootingRegion = 6;
+                break;
+            case -2:
+                shootingRegion = 7;
+                break;
+            case -1:
+                shootingRegion = 8;
+        }
+
+        /* compute shooting direction in angles */
+        /* negate such that direction is represented in clockwise 0 - 360 */
+        shootingDirection = (float) (((-1) * (float)yaw / 0.5) *  90);
+        if (shootingDirection < 0){
+            shootingDirection = 360 + shootingDirection;
+        }
+
+        int degree = (int) Math.floor(shootingDirection);
+        float decimal = (shootingDirection - degree) * 60;
+        int minute = (int)decimal;
+        float second = (decimal - minute) * 60;
 
         // Update the GUI (at a slower rate easy for the user to see on screen)
         long currentTime = System.currentTimeMillis();
         if( currentTime - lastPhoneDirectionTime > MAX_UPDATE_INTERVAL_PHONE_DIRECTION ) {
 
             // Update the text view
-            textView_PhoneShootingRegion.setText( "\nShooting direction: " + shootingDirection + " degrees" + 
+            textView_PhoneShootingRegion.setText( "\nShooting direction: \n" + degree + "\u00B0 " + minute + "\' " + second + "\'\'" +
                                                   "\nShooting region: " + shootingRegion );
 
             // Set the last GUI update time
@@ -500,6 +564,8 @@ public class ShootingAppActivity
     private Sensor acclSensor;
     /** Gravity sensor. */
     private Sensor gravitySensor;
+    /** Rotation sensor. */
+    private Sensor rotationSensor;
 
     // Gravity sensor
     /** Last time the GUI was updated about phone angle (UNIX millisec). */
@@ -532,10 +598,15 @@ public class ShootingAppActivity
     private static final long MAX_UPDATE_INTERVAL_PHONE_DIRECTION = 250L;
     /** Number of shooting regions (in the 360 deg shooting region around the user). */
     private static final int NUM_SHOOTING_REGIONS = 8;
-    /** Shooting direction the user is pointing at (in the range 0 .. 360 degrees). */
+    /** Shooting absolute direction to from north. */
+    private float shootingInitialReference;
+    /** Flag to indicate if reference has been initialized. */
+    private boolean hasFixedRefDirection;
+    /** Shooting direction the user is pointing at (in the range 0 .. 360 degrees) relative to initial reference. */
     private float shootingDirection;
     /** Shooting region the user is pointing at (numbered from 1 .. NUM_SHOOTING_REGIONS). */
     private int shootingRegion;
+
 
     // GUI widgets
     /** Text view displaying the linear accl processing. */
@@ -576,4 +647,5 @@ public class ShootingAppActivity
     private Handler handler;
     /** TAG used for ddms logging. */
     private static final String TAG = "ShootingApp";
+
 }

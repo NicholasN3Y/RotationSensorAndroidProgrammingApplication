@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="C:\Users\Nicholas\OneDrive\Documents\Year4Sem2\CS4222\Assignments\Programming Assignment 2\ShootingApp\src\main\assets"/><source path="C:\Users\Nicholas\OneDrive\Documents\Year4Sem2\CS4222\Assignments\Programming Assignment 2\ShootingApp\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="C:\Users\Nicholas\OneDrive\Documents\Year4Sem2\CS4222\Assignments\Programming Assignment 2\ShootingApp\src\debug\assets"/></dataSet></merger>

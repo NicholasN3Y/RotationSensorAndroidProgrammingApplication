@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="C:\Users\Nicholas\OneDrive\Documents\Year4Sem2\CS4222\Assignments\Programming Assignment 2\ShootingApp\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="3030527352528a5f822679fdf6f9d1ffb95ef539">
+        <dex dex="C:\Users\Nicholas\OneDrive\Documents\Year4Sem2\CS4222\Assignments\Programming Assignment 2\ShootingApp\build\intermediates\pre-dexed\debug\instant-run-bootstrap_410146ecd4d21320a6639f9d3f38416b672a8ec6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Nicholas\OneDrive\Documents\Year4Sem2\CS4222\Assignments\Programming Assignment 2\ShootingApp\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="bb7efd3c6d30d5028e031927d1e600a4c2890658">
+        <dex dex="C:\Users\Nicholas\OneDrive\Documents\Year4Sem2\CS4222\Assignments\Programming Assignment 2\ShootingApp\build\intermediates\pre-dexed\debug\instant-run_33a2b95dea5f3108dbcd46c84122ca408f08326b.jar" />
+    </item>
+
+</items>

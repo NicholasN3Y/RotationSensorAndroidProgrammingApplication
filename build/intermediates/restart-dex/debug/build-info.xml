@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<instant-run
+    abi="armeabi-v7a,armeabi"
+    api-level="19"
+    density="xhdpi"
+    format="8"
+    plugin-version="2.2.3"
+    timestamp="281339138307006"
+    token="-4010936840951531707"
+    verifier="FULL_BUILD_REQUESTED" >
+
+    <task
+        name="javac"
+        duration="15230" />
+    <task
+        name="instant-run-dex"
+        duration="0" />
+    <task
+        name="instant-run-transform"
+        duration="280" />
+    <task
+        name="verifier"
+        duration="25" />
+
+    <artifact
+        location="C:\Users\Nicholas\OneDrive\Documents\Year4Sem2\CS4222\Assignments\Programming Assignment 2\ShootingApp\build\outputs\apk\ShootingApp-debug.apk"
+        type="MAIN" />
+
+    <build
+        timestamp="281339138307006"
+        verifier="FULL_BUILD_REQUESTED" >
+        <artifact
+            location="C:\Users\Nicholas\OneDrive\Documents\Year4Sem2\CS4222\Assignments\Programming Assignment 2\ShootingApp\build\outputs\apk\ShootingApp-debug.apk"
+            type="MAIN" />
+    </build>
+
+</instant-run>
