@@ -5,29 +5,29 @@
     density="xhdpi"
     format="8"
     plugin-version="2.2.3"
-    timestamp="288443501118743"
+    timestamp="623377475300615"
     token="-4010936840951531707"
     verifier="FULL_BUILD_REQUESTED" >
 
     <task
         name="javac"
-        duration="11655" />
+        duration="13437" />
     <task
         name="instant-run-dex"
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="175" />
+        duration="375" />
     <task
         name="verifier"
-        duration="5" />
+        duration="11" />
 
     <artifact
         location="C:\Users\Nicholas\OneDrive\Documents\Year4Sem2\CS4222\Assignments\Programming Assignment 2\ShootingApp\build\outputs\apk\ShootingApp-debug.apk"
         type="MAIN" />
 
     <build
-        timestamp="288443501118743"
+        timestamp="623377475300615"
         verifier="FULL_BUILD_REQUESTED" >
         <artifact
             location="C:\Users\Nicholas\OneDrive\Documents\Year4Sem2\CS4222\Assignments\Programming Assignment 2\ShootingApp\build\outputs\apk\ShootingApp-debug.apk"

@@ -320,28 +320,6 @@ public class ShootingAppActivity
         // Also, display the shooting direction and the shooting region 
         //  in the text view below
 
-        double division =  yaw / 45;
-        if ( division < 0 ) {
-            shootingRegion = (int)Math.floor(division);
-        } else if ( division > 0 ) {
-            shootingRegion = (int)Math.ceil(division);
-        }else{
-            shootingRegion = 1;
-        }
-        switch(shootingRegion){
-            case -4:
-                shootingRegion = 5;
-                break;
-            case -3:
-                shootingRegion = 6;
-                break;
-            case -2:
-                shootingRegion = 7;
-                break;
-            case -1:
-                shootingRegion = 8;
-        }
-
         /* compute shooting direction in angles */
         /* negate such that direction is represented in clockwise 0 - 360 */
         shootingDirection = yaw;
@@ -353,6 +331,9 @@ public class ShootingAppActivity
         float decimal = (shootingDirection - degree) * 60;
         int minute = (int)decimal;
         float second = (decimal - minute) * 60;
+
+        /* translate shootingDirection to shootingRegion*/
+        shootingRegion = (int)Math.ceil(shootingDirection / 45);
 
         // Update the GUI (at a slower rate easy for the user to see on screen)
         long currentTime = System.currentTimeMillis();
